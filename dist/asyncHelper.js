@@ -11,7 +11,7 @@ var BrowserMutationObserver = browserGlobal.MutationObserver || browserGlobal.We
 
 var isWorker = typeof Uint8ClampedArray !== 'undefined' && typeof importScripts !== 'undefined' && typeof MessageChannel !== 'undefined';
 
-var  hasPromise = (function () {
+var hasPromise = (function () {
     var _this;
     if (typeof global !== 'undefined') {
         _this = global;
@@ -30,9 +30,6 @@ var  hasPromise = (function () {
     }
     return promiseToString === '[object Promise]';
 })();
-
-
-var hasMicrotask = isNode || hasPromise || BrowserMutationObserver ? true : false;
 
 function toArray (likeArr) {
     return Array.prototype.slice.call(likeArr);
@@ -76,28 +73,25 @@ function useSetTimeout(fn) {
   };
 }
 
-var scheduleFlush = undefined, taskMethod = undefined, mtaskMethod = undefined;
+var scheduleFlush = undefined, taskMethod = undefined;
 
-if(hasMicrotask) {
-    if (isNode) {
-      mtaskMethod = useNextTick;
-      scheduleFlush = useNextTick(flush);
-    } else if (hasPromise) {
-      mtaskMethod = usePromise; 
-      scheduleFlush = usePromise(flush);  
-    } else if (BrowserMutationObserver) {
-      mtaskMethod = useMutationObserver;  
-      scheduleFlush = useMutationObserver(flush);  
-    }
-} 
 
 if (isWorker) {
-    taskMethod = useMessageChannel;
-    scheduleFlush = useMessageChannel(flush);
+  taskMethod = useMessageChannel;
+  scheduleFlush = useMessageChannel(flush);
 } else {
-    taskMethod = useSetTimeout;
-    scheduleFlush = useSetTimeout(flush);
+  taskMethod = useSetTimeout;
+  scheduleFlush = useSetTimeout(flush);
 }
+
+if (isNode) {
+  scheduleFlush = useNextTick(flush);
+} else if (hasPromise) {
+  scheduleFlush = usePromise(flush);  
+} else if (BrowserMutationObserver) {
+  scheduleFlush = useMutationObserver(flush);  
+} 
+
 
 function flush () {
     tasksQueue.length && runTasks(tasksQueue) && (tasksQueue.length = 0);
