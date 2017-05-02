@@ -101,18 +101,17 @@ function runTasks (tasksFnQueue) {
 
     for(var i = 0; i < taskLen; i++){
         var fnStore = tasksFnQueue[i];
-        var option = fnStore.option;
-        var fn = fnStore.fn;
         var fnArgs = fnStore.argsQueue;
         if(fnArgs.length === 0) continue;
 
+        var option = fnStore.option;
+        var fn = fnStore.fn;
         var type = fnStore.type;
         var t, arg;
         
         if( (t = fnStore.option.callMode) !== undefined ){
 
             t === 'first' ? arg = fnArgs[0] : t === 'last' ? arg = fnArgs[fnArgs.length - 1] : undefined;
-
             if(arg !== undefined){
                 callByType(type, fn, arg, option.context); 
                 fnArgs.length = 0;   
@@ -149,7 +148,7 @@ function mid (fn, type, option) {
 
    tasksFnQueue.push(newfn)
 
-   return function (fn, type, option) { 
+   return function () { 
        newfn.argsQueue.push(toArray(arguments));
        scheduleFlush();
    };
