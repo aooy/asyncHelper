@@ -2,6 +2,17 @@
 
 asyncHelper提供简单的异步插入task和microtask。
 
+# 引入
+
+文件位于dist/asyncHelper.js,支持常用的模块标准。
+```js
+//例如：
+//CommonJS
+var asyncHelper = require('./dist/asyncHelper.js');
+//Browser globals
+<script src="path/to/asyncHelper.js"></script>
+```
+
 # task
 
 asyncHelper.task(fn, option)
