@@ -33,6 +33,9 @@ myMicrotaskTask('this is microtask')
 
 ```
 
+## Note
+当没有提供microtask的api时，会回退成task。
+
 # option
 
 asyncHelper.task和asyncHelper.mtask的第二个参数接受一个配置对象。
