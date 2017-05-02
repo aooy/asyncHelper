@@ -8,7 +8,7 @@ asyncHelper提供简单的异步插入task和microtask。
 ```js
 //例如：
 //CommonJS
-var asyncHelper = require('./dist/asyncHelper.js');
+var asyncHelper = require('path/to/asyncHelper.js');
 //Browser globals
 <script src="path/to/asyncHelper.js"></script>
 ```
