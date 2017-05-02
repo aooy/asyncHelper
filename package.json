@@ -1,0 +1,24 @@
+{
+  "name": "async-helper",
+  "version": "1.0.0",
+  "description": "helpe to insert task and microtask",
+  "main": "dist/asyncHelper.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aooy/asyncHelper.git"
+  },
+  "keywords": [
+    "task",
+    "microtask",
+    "async"
+  ],
+  "author": "Yangjingzhuo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aooy/asyncHelper/issues"
+  },
+  "homepage": "https://github.com/aooy/asyncHelper#readme"
+}

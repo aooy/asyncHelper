@@ -92,33 +92,38 @@ if (isNode) {
   scheduleFlush = useMutationObserver(flush);  
 } 
 
-
 function flush () {
-    tasksQueue.length && runTasks(tasksQueue) && (tasksQueue.length = 0);
+    tasksFnQueue.length && runTasks(tasksFnQueue);
 }
 
-function runTasks (taskQueue) {
-    var taskLen = taskQueue.length;
+function runTasks (tasksFnQueue) {
+    var taskLen = tasksFnQueue.length;
 
     for(var i = 0; i < taskLen; i++){
-        var fnStore = taskQueue[i];
+        var fnStore = tasksFnQueue[i];
         var option = fnStore.option;
         var fn = fnStore.fn;
         var fnArgs = fnStore.argsQueue;
+        if(fnArgs.length === 0) continue;
+
         var type = fnStore.type;
-        var t;
+        var t, arg;
+        
         if( (t = fnStore.option.callMode) !== undefined ){
-            if(t === 'first'){
-                callByType(type, fn, fnArgs[0], option.context);          
-                continue;
-            } else if (t === 'last') {
-                callByType(type, fn, fnArgs[fnArgs.length - 1], option.context);
+
+            t === 'first' ? arg = fnArgs[0] : t === 'last' ? arg = fnArgs[fnArgs.length - 1] : undefined;
+
+            if(arg !== undefined){
+                callByType(type, fn, arg, option.context); 
+                fnArgs.length = 0;   
                 continue;
             }
+
         }
 
-        for (var j = 0; j < fnArgs.length; j++) {
-            callByType(type, fn, fnArgs[j], option.context);     
+        while(fnArgs.length > 0){
+            arg = fnArgs.shift();
+            callByType(type, fn, arg, option.context);
         }
     }
     return true;
@@ -132,7 +137,7 @@ function callByType (type, cb, args, context) {
     }
 }
 
-var tasksQueue = [];
+var tasksFnQueue = [];
 
 function mid (fn, type, option) {
    var newfn = {
@@ -142,9 +147,9 @@ function mid (fn, type, option) {
          argsQueue: []
    };
 
-   tasksQueue.push(newfn)
+   tasksFnQueue.push(newfn)
 
-   return function () {
+   return function (fn, type, option) { 
        newfn.argsQueue.push(toArray(arguments));
        scheduleFlush();
    };
